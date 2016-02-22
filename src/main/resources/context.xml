@@ -1,0 +1,65 @@
+<beans xmlns="http://www.springframework.org/schema/beans"
+	xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:tx="http://www.springframework.org/schema/tx"
+	xsi:schemaLocation="http://www.springframework.org/schema/beans http://www.springframework.org/schema/beans/spring-beans-4.2.xsd
+		http://www.springframework.org/schema/tx http://www.springframework.org/schema/tx/spring-tx.xsd">
+
+	
+	<!--описывает где лежат данные для нашей базы -->
+	<bean id="dataSource"
+		class="org.springframework.jdbc.datasource.DriverManagerDataSource">
+		<property name="driverClassName" value="com.mysql.jdbc.Driver" />
+		<property name="url" value="jdbc:mysql://localhost/notes" />
+		<property name="username" value="root" />
+		<property name="password" value="root" />
+	</bean>
+	
+	<!--Конфигурируем SessionFactory из Hibernate -->
+	<bean id="hibernateSessionFactory"
+		class="org.springframework.orm.hibernate5.LocalSessionFactoryBean">
+		<property name="dataSource" ref="dataSource"></property>
+		<property name="hibernateProperties">
+			<props>
+				<prop key="hibernate.dialect">org.hibernate.dialect.MySQLDialect</prop>
+				<prop key="hibernate.show_sql">true</prop>
+				<prop key="hibernate.format_sql">true</prop>
+				<prop key="hibernate.hbm2ddl.auto">create</prop>
+			</props>
+		</property>
+		<property name="mappingResources">
+			<list>
+			    <value>/com/notes/domain/User.hbm.xml</value>
+			 	<value>/com/notes/domain/Label.hbm.xml</value>
+				<value>/com/notes/domain/Note.hbm.xml</value>
+			</list>
+		</property>
+	</bean>
+
+	<bean id="transactionManager"
+		class="org.springframework.orm.hibernate5.HibernateTransactionManager">
+		<property name="sessionFactory" ref="hibernateSessionFactory" />
+	</bean>
+	<tx:annotation-driven />
+
+	<!--дао знает как сохранять и извлекать из базы продукты и продуктлисты -->
+	<bean id="labelDao" class="com.notes.dao.LabelDao">
+		<property name="sessionFactory" ref="hibernateSessionFactory"></property>
+	</bean>
+	
+	<bean id="noteDao" class="com.notes.dao.NoteDao">
+		<property name="sessionFactory" ref="hibernateSessionFactory"></property>
+	</bean>
+
+	<bean id="userDao" class="com.notes.dao.UserDao">
+		<property name="sessionFactory" ref="hibernateSessionFactory"></property>
+	</bean>
+	
+	
+
+	<bean id="main" class="com.notes.spring.Main">
+		<property name="labelDao" ref="labelDao" />
+		<property name="noteDao" ref="noteDao" />
+		<property name="userDao" ref="userDao" />
+	</bean> 
+
+	
+</beans>

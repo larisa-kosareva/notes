@@ -1,0 +1,24 @@
+<!--?xml version="1.0"? -->
+
+<hibernate-mapping package="com.notes.domain">
+	<class name="Note" table="NOTE">
+		<id name="noteId" column="note_id">
+			<generator class="native">
+			</generator>
+		</id>
+		<property name="name" column="name" />
+		<property name="text" column="text" />
+		<property name="lastUpdate" column="last_update" />
+		<many-to-one name="user" class="User" fetch="select">
+			<column name="user_id" not-null="true" />
+		</many-to-one>
+
+		<property name="creationDate" column="creation_date" />
+
+		<set name="labels" table="NOTE_LABEL" inverse="false" lazy="false"
+			fetch="select" cascade="all">
+			<key column="note_id" />
+			<many-to-many column="label_id" class="Label" />
+		</set>
+	</class>
+</hibernate-mapping>

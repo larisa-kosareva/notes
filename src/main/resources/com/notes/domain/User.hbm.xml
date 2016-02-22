@@ -1,0 +1,12 @@
+<!--?xml version="1.0"? -->
+
+<hibernate-mapping package="com.notes.domain">
+	<class name="User" table="USER">
+		<id name="userId" column="user_id">
+			<generator class="native">
+			</generator>
+		</id>
+		<property name="name" column="name" />
+		<property name="password" column="password" />
+	</class>
+</hibernate-mapping>

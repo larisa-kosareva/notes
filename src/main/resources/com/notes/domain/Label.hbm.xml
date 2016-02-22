@@ -1,0 +1,21 @@
+<!--?xml version="1.0"? -->
+
+<hibernate-mapping package="com.notes.domain">
+	<class name="Label" table="LABEL">
+		<id name="labelId" column="label_id">
+			<generator class="native">
+			</generator>
+		</id>
+		<property name="name" column="name" />
+
+		<many-to-one name="user" class="User" fetch="select">
+			<column name="user_id" not-null="true" />
+		</many-to-one>
+
+		<set name="notes" table="NOTE_LABEL" inverse="false" lazy="false"
+			fetch="select" cascade="all">
+			<key column="note_id" />
+			<many-to-many column="label_id" class="Label" />
+		</set>
+	</class>
+</hibernate-mapping>
